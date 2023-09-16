@@ -40,6 +40,12 @@ FETCH_FROM_GAMES=$($PSQL "SELECT * FROM games WHERE username='$username'")
       if [[ "$random_number" -eq "$guess" ]]
       then 
         echo "You guessed it in $tries tries. The secret number was $random_number. Nice job!"
+        ((TGAMES++))
+        if [[ "$tries" -gt "$BESTG" ]]
+        then
+          BESTG=$tries
+        fi
+        UPDATE_RESULTS=$($PSQL "UPDATE games SET games_played=$TGAMES,best_game=$BESTG WHERE username='$username'")
       elif [[ "$random_number" -lt "$guess" ]]
       then
         ((tries++))
@@ -55,9 +61,11 @@ FETCH_FROM_GAMES=$($PSQL "SELECT * FROM games WHERE username='$username'")
 
   UPDATE_GAME(){
     ((TGAMES++))
-    if[["$tries" -gt "$BESTG" ]]
+    if [[ "$tries" -gt "$BESTG" ]]
     then
       BESTG=$tries
     fi
+    UPDATE_RESULTS=$($PSQL "UPDATE games SET games_played=$TGAMES,best_game=$BESTG WHERE username='$username'")
+    echo "$UPDATE_RESULTS"
   }
   MAIN_GAME
