@@ -53,4 +53,11 @@ FETCH_FROM_GAMES=$($PSQL "SELECT * FROM games WHERE username='$username'")
     fi
   }
 
+  UPDATE_GAME(){
+    ((TGAMES++))
+    if[["$tries" -gt "$BESTG" ]]
+    then
+      BESTG=$tries
+    fi
+  }
   MAIN_GAME
